@@ -78,7 +78,7 @@ async function checkExistingCard(token, listId, name) {
   return cards.find(card => card.name === name);
 }
 
-async function createTrelloCard(token, listId, name, position, desc = '') {
+async function createTrelloCard(token, listId, name, cardPosition, desc = '') {
   // First check if card already exists
   const existingCard = await checkExistingCard(token, listId, name);
   if (existingCard) {
@@ -116,7 +116,7 @@ async function createTrelloCard(token, listId, name, position, desc = '') {
         name,
         idList: listId,
         desc: desc,
-        pos: position
+        pos: cardPosition
       })
     }
   );
@@ -312,7 +312,7 @@ function main() {
     // Get settings
     const token = logseq.settings?.trelloToken;
     const listId = logseq.settings?.defaultListId;
-    const position = logseq.settings?.defaultCardPos;
+    const cardPosition = logseq.settings?.defaultCardPos;
 
     if (!token) {
       logseq.App.showMsg('Please configure your Trello token in plugin settings!', 'warning');
@@ -325,7 +325,7 @@ function main() {
     }
 
     try {
-      const card = await createTrelloCard(token, listId, position, block.content);
+      const card = await createTrelloCard(token, listId, block.content, cardPosition);
       logseq.App.showMsg('Trello card created successfully!');
       
       // Add the card URL as a property to the block
@@ -345,7 +345,7 @@ function main() {
     // Get settings
     const token = logseq.settings?.trelloToken;
     const listId = logseq.settings?.defaultListId;
-    const position = logseq.settings?.defaultCardPos;
+    const cardPosition = logseq.settings?.defaultCardPos;
 
     if (!token) {
       logseq.App.showMsg('Please configure your Trello token in plugin settings!', 'warning');
@@ -372,7 +372,7 @@ function main() {
         .join('\n');
 
       // Create card with page title and content
-      const card = await createTrelloCard(token, listId, page.name, position, description);
+      const card = await createTrelloCard(token, listId, page.name, cardPosition, description);
       logseq.App.showMsg('Trello card created from page successfully!');
       
       // Add the card URL as a page property

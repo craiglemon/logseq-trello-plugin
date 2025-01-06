@@ -347,9 +347,12 @@ function main() {
         url = card.shortUrl;
       }
 
-      let todo = ""; // default to not being a TODO
+      let todo = ""; // default to not being a TODO/task
       if(logseq.settings?.convertToTodo) {
-        todo = "TODO ";
+        if(! block.content.startsWith("TODO")) {
+          // Not already a TODO/task so add prefix
+          todo = "TODO ";
+        }
       }
 
       // Add the card URL as a property to the block

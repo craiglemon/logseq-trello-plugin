@@ -34,6 +34,13 @@ const settings = [
     title: "Use short or long Trello card URL",
     description: "Use the short URL in block/page content after creating a Trello card",
     default: false // defaulting to false doesn't change existing behaviour
+  },
+  {
+    key: "convertToTodo",
+    type: "boolean",
+    title: "Convert block to TODO after creating Trello card",
+    description: "After creating the Trello card from a block, convert the block to a TODO task",
+    default: false // defaulting to false doesn't change existing behaviour
   }
 ];
 
@@ -334,16 +341,21 @@ function main() {
     try {
       const card = await createTrelloCard(token, listId, block.content, cardPosition);
       logseq.App.showMsg('Trello card created successfully!');
-      let url = card.url; // default to long
 
+      let url = card.url; // default to long
       if(logseq.settings?.shortUrl) {
         url = card.shortUrl;
+      }
+
+      let todo = ""; // default to not being a TODO
+      if(logseq.settings?.convertToTodo) {
+        todo = "TODO ";
       }
 
       // Add the card URL as a property to the block
       await logseq.Editor.updateBlock(
         block.uuid,
-        `${block.content}\ntrello-card:: ${url}`
+        `${todo}${block.content}\ntrello-card:: ${url}`
       );
 
     } catch (error) {

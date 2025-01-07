@@ -22,7 +22,7 @@ This plugin provides seamless integration between Logseq and Trello, allowing yo
 - Import content in clean, block-based format for easy editing
 - Allows the ability to convert a Logseq block into a task after the Trello card has been created
   * Handles both the TODO/DOING and LATER/NOW constructs
-  * Does not convert a page to a task when creating a Trello card form a Logseq page
+  * Does not convert a page to a task when creating a Trello card from a Logseq page
 
 ## Getting Started
 

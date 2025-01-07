@@ -36,10 +36,10 @@ const settings = [
     default: false // defaulting to false doesn't change existing behaviour
   },
   {
-    key: "convertToTodo",
+    key: "convertToTask",
     type: "boolean",
-    title: "Convert block to TODO after creating Trello card",
-    description: "After creating the Trello card from a block, convert the block to a TODO task",
+    title: "Convert block to a task after creating Trello card",
+    description: "After creating the Trello card from a block, convert the block to a task",
     default: false // defaulting to false doesn't change existing behaviour
   }
 ];
@@ -347,18 +347,22 @@ function main() {
         url = card.shortUrl;
       }
 
-      let todo = ""; // default to not being a TODO/task
-      if(logseq.settings?.convertToTodo) {
-        if(! block.content.startsWith("TODO")) {
-          // Not already a TODO/task so add prefix
-          todo = "TODO ";
+      // Convert block to a task if convertToTask == True
+      //   Ensure that we handle both TODO/DOING and LATER/NOW constructs using the preferredTodo user config value
+      const preferredTodo = (await logseq.App.getUserConfigs()).preferredTodo; 
+      let task = ""; // default to not being a task
+
+      if(logseq.settings?.convertToTask) {
+        if(! block.content.startsWith(preferredTodo)) {
+          // Not already a task so add prefix
+          task = preferredTodo.concat(' ');
         }
       }
 
       // Add the card URL as a property to the block
       await logseq.Editor.updateBlock(
         block.uuid,
-        `${todo}${block.content}\ntrello-card:: ${url}`
+        `${task}${block.content}\ntrello-card:: ${url}`
       );
 
     } catch (error) {
